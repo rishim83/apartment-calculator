@@ -1,0 +1,161 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f0f4f8;
+  color: #1e293b;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+/* ─── LAYOUT ─────────────────────────────────────────────────────────────── */
+.layout { display: flex; min-height: 100vh; }
+
+/* ─── SIDEBAR ────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: 270px;
+  min-width: 270px;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-title {
+  padding: 18px 16px 14px;
+  background: #020617;
+}
+.sidebar-title h2 { font-size: 14px; font-weight: 700; color: #f1f5f9; }
+.sidebar-title p  { font-size: 11px; color: #64748b; margin-top: 3px; }
+.sidebar-body { padding: 12px 14px; flex: 1; }
+
+/* ─── INPUT GROUP ────────────────────────────────────────────────────────── */
+.igroup { margin-bottom: 16px; }
+.igroup-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #475569;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #1e293b;
+}
+.irow { margin-bottom: 7px; }
+.irow label { display: block; font-size: 10.5px; color: #94a3b8; margin-bottom: 2px; }
+.irow .input-wrap {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.irow .input-wrap:focus-within { border-color: #3b82f6; }
+.irow .pfx, .irow .sfx {
+  padding: 4px 6px;
+  font-size: 11px;
+  color: #64748b;
+  background: #0f172a;
+  flex-shrink: 0;
+}
+.irow input {
+  flex: 1;
+  padding: 4px 8px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f1f5f9;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: right;
+  min-width: 0;
+}
+
+/* ─── MAIN CONTENT ───────────────────────────────────────────────────────── */
+.main { flex: 1; padding: 20px; overflow-x: auto; min-width: 0; }
+
+.page-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-header h1 { font-size: 17px; font-weight: 700; }
+.page-header p  { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+
+/* ─── PANEL ──────────────────────────────────────────────────────────────── */
+.panel {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.panel-hdr {
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-hdr .tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+.panel-hdr h3   { font-size: 13px; font-weight: 700; }
+.panel-hdr .sub { font-size: 11px; opacity: 0.65; margin-left: auto; }
+.panel-body { padding: 14px 16px; }
+
+/* ─── GRID LAYOUTS ───────────────────────────────────────────────────────── */
+.two-col   { display: grid; grid-template-columns: 1fr 1fr;       gap: 14px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr;   gap: 14px; }
+
+/* ─── COLUMN CARD ────────────────────────────────────────────────────────── */
+.col-card { border-radius: 7px; padding: 11px 12px; }
+.col-card h4 {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 10px;
+}
+
+/* ─── MATH TABLE ─────────────────────────────────────────────────────────── */
+.math-tbl { width: 100%; border-collapse: collapse; }
+.math-tbl td { padding: 2px 3px; }
+
+/* ─── VERDICT BOX ────────────────────────────────────────────────────────── */
+.verdict-box { border-radius: 7px; padding: 11px 14px; margin-top: 12px; }
+.verdict-box .vt {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.verdict-box .vl { font-size: 12.5px; }
+
+/* ─── COMPARISON TABLE ───────────────────────────────────────────────────── */
+.cmp-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.cmp-tbl th { padding: 7px 10px; font-size: 10.5px; text-align: right; }
+.cmp-tbl th:first-child { text-align: left; }
+.cmp-tbl td { padding: 6px 10px; text-align: right; border-bottom: 1px solid #f1f5f9; }
+.cmp-tbl td:first-child { text-align: left; }
+.cmp-tbl tr:last-child td { border-bottom: none; }
+
+/* ─── SENSITIVITY ROWS ───────────────────────────────────────────────────── */
+.sens-row-win  { background: #f0fdf4; }
+.sens-row-lose { background: #fef2f2; }

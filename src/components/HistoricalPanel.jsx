@@ -47,10 +47,11 @@ export function HistoricalPanel({ r, inp }) {
               <MR label="Net proceeds (walk away with)"         value={b.netAfterTax} green bold />
               <MR sep />
               <SH label="Total In vs Total Out" color="#1d4ed8" />
-              <MR label="Net proceeds received"                 value={b.netAfterTax}  green indent />
-              <MR label="− Total housing costs paid"            value={-b.totalCost}   red indent />
+              <MR label="Net proceeds received"                 value={b.netAfterTax}   green indent />
+              <MR label="− Total housing costs paid"            value={-b.totalCost}    red indent />
+              <MR label={`+ Tax deductions (int + ${inp.maintDeductPct}% maint @ ${inp.marginalTaxRate}%)`} value={b.taxSavings} green indent />
               <MR sep />
-              <MR label="NET FINANCIAL POSITION"                value={b.netPosition}  bold green={b.netPosition >= 0} red={b.netPosition < 0} />
+              <MR label="NET FINANCIAL POSITION"                value={b.netPosition}   bold green={b.netPosition >= 0} red={b.netPosition < 0} />
             </tbody></table>
           </div>
 

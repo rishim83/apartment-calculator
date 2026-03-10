@@ -61,6 +61,15 @@ export function ComparisonPanel({ r, inp }) {
               <td style={{ background: '#ecfeff' }}>{fmt(-s4b.totalRent)}</td>
             </tr>
             <tr>
+              <td style={{ color: '#64748b', fontWeight: 600 }}>Tax Deduction Savings<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(mortgage int + {inp.maintDeductPct}% maint @ {inp.marginalTaxRate}%)</span></td>
+              <td style={{ background: '#eff6ff', color: '#047857' }}>{fmt(b.taxSavings)}</td>
+              <td style={{ background: '#faf5ff', color: '#94a3b8' }}>—</td>
+              <td style={{ background: '#fff7ed', color: '#94a3b8' }}>—</td>
+              <td style={{ background: '#f0fdf4', color: '#047857' }}>{fmt(s3.taxSavings)}</td>
+              <td style={{ background: '#eef2ff', color: '#047857' }}>{fmt(s4a.taxSavings)}</td>
+              <td style={{ background: '#ecfeff', color: '#94a3b8' }}>—</td>
+            </tr>
+            <tr>
               <td style={{ color: '#64748b', fontWeight: 600 }}>Ending Portfolio / Net if Sold<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(after all taxes)</span></td>
               <td style={{ background: '#eff6ff' }}>{fmt(b.netAfterTax)}</td>
               <td style={{ background: '#faf5ff' }}>{fmt(r.histRent.portfolioAfterTax)}</td>

@@ -26,6 +26,20 @@ function grow(principal, annualRate, years) {
   return principal * Math.pow(1 + annualRate / 100, years)
 }
 
+// Annual tax savings from mortgage interest deduction + deductible maintenance
+function taxSavingsFor(balance, annualRate, payment, years, monthlyMaint, maintEsc, maintDeductPct, marginalTaxRate) {
+  let total = 0
+  for (let y = 0; y < years; y++) {
+    const balStart     = balAfter(balance, annualRate, payment, y * 12)
+    const balEnd       = balAfter(balance, annualRate, payment, (y + 1) * 12)
+    const interestPaid = payment * 12 - (balStart - balEnd)
+    const maintYear    = monthlyMaint * Math.pow(1 + maintEsc / 100, y) * 12
+    const deductible   = interestPaid + maintYear * (maintDeductPct / 100)
+    total += deductible * (marginalTaxRate / 100)
+  }
+  return total
+}
+
 // Capital gains tax with $500k married primary exclusion
 function capGains(salePrice, basis, taxRate) {
   const gain = salePrice - basis
@@ -46,6 +60,8 @@ export function calcAll(inp) {
   const histTotalMtg   = histPmt * inp.holdYears * 12
   const histTotalMaint = sumEscalating(inp.monthlyMaint, inp.maintEsc, inp.holdYears)
   const histTotalCost  = histTotalMtg + histTotalMaint
+  const histTaxSavings = taxSavingsFor(histLoan, inp.originalRate, histPmt, inp.holdYears,
+    inp.monthlyMaint, inp.maintEsc, inp.maintDeductPct, inp.marginalTaxRate)
 
   const histSellingCosts = inp.currentValue * (inp.sellingCostPct / 100)
   const histNetProceeds  = inp.currentValue - histBalance - histSellingCosts
@@ -60,6 +76,7 @@ export function calcAll(inp) {
     totalMtg: histTotalMtg,
     totalMaint: histTotalMaint,
     totalCost: histTotalCost,
+    taxSavings: histTaxSavings,
     sellingCosts: histSellingCosts,
     netProceeds: histNetProceeds,
     ...histCG,
@@ -132,6 +149,8 @@ export function calcAll(inp) {
   for (let y = 0; y < inp.forwardYears; y++) {
     sc3TotalCost += (sc3Pmt + inp.monthlyMaint * Math.pow(1 + inp.maintEsc / 100, y)) * 12
   }
+  const sc3TaxSavings = taxSavingsFor(inp.mortgageBalance, inp.newRate, sc3Pmt, inp.forwardYears,
+    inp.monthlyMaint, inp.maintEsc, inp.maintDeductPct, inp.marginalTaxRate)
 
   // Sensitivity table: how does appreciation affect "Keep" scenarios vs "Sell+Rent"?
   const sc3NetAtAppr = (appr) => {
@@ -151,6 +170,7 @@ export function calcAll(inp) {
     startEquity,
     equityGained,
     totalCost: sc3TotalCost,
+    taxSavings: sc3TaxSavings,
     monthlyCostYr1: sc3Pmt + inp.monthlyMaint,
   }
 
@@ -168,12 +188,14 @@ export function calcAll(inp) {
   for (let y = 0; y < inp.forwardYears; y++) {
     sc4aTotalCost += (sc4aPmt + inp.monthlyMaint * Math.pow(1 + inp.maintEsc / 100, y)) * 12
   }
+  const sc4aTaxSavings = taxSavingsFor(sc4aBalance, inp.newRate, sc4aPmt, inp.forwardYears,
+    inp.monthlyMaint, inp.maintEsc, inp.maintDeductPct, inp.marginalTaxRate)
 
   const sc4aNetAtAppr = (appr) => {
     const hv      = grow(inp.currentValue, appr, inp.forwardYears)
     const netSold = hv - sc4aFwdBalance - hv * (inp.sellingCostPct / 100)
     const cg      = capGains(hv, costBasis, inp.capGainsRate)
-    return netSold - cg.tax - sc4aTotalCost
+    return netSold - cg.tax - sc4aTotalCost + sc4aTaxSavings
   }
 
   const sc4a = {
@@ -187,6 +209,7 @@ export function calcAll(inp) {
     ...sc4aCG,
     netSoldAfterTax: sc4aNetSoldATax,
     totalCost: sc4aTotalCost,
+    taxSavings: sc4aTaxSavings,
     monthlyCostYr1: sc4aPmt + inp.monthlyMaint,
   }
 
@@ -211,12 +234,12 @@ export function calcAll(inp) {
   const oldPmt = pmt(histLoan, inp.originalRate, 360)
 
   // ── NET FINANCIAL POSITIONS (ending wealth − all money spent) ─────────────
-  histBuy.netPosition  = histBuy.netAfterTax          - histBuy.totalCost
+  histBuy.netPosition  = histBuy.netAfterTax          - histBuy.totalCost  + histBuy.taxSavings
   histRent.netPosition = histRent.portfolioAfterTax   - histRent.totalRent
   sc2.netPosition      = sc2.portfolioAfterTax        - sc2.totalRent
-  sc3.netPosition      = sc3.netSoldAfterTax          - sc3.totalCost
+  sc3.netPosition      = sc3.netSoldAfterTax          - sc3.totalCost      + sc3.taxSavings
   // 4A: lump sum reduces mortgage → comes back via higher equity in netSoldAfterTax, don't double-count
-  sc4a.netPosition     = sc4a.netSoldAfterTax         - sc4a.totalCost
+  sc4a.netPosition     = sc4a.netSoldAfterTax         - sc4a.totalCost     + sc4a.taxSavings
   // 4B: sell (sc2) + invest lump sum — lump sum goes into portfolio, already in totalPortfolioAfterTax
   sc4b.netPosition     = sc4b.totalPortfolioAfterTax  - sc4b.totalRent
 
@@ -225,7 +248,7 @@ export function calcAll(inp) {
     appr,
     homeVal: grow(inp.currentValue, appr, inp.forwardYears),
     netSold: sc3NetAtAppr(appr),
-    sc3Net:  sc3NetAtAppr(appr) - sc3TotalCost,
+    sc3Net:  sc3NetAtAppr(appr) - sc3TotalCost + sc3TaxSavings,
     sc4aNet: sc4aNetAtAppr(appr),
     sc2Net:  sc2.netPosition,
     sc4bNet: sc4b.netPosition,

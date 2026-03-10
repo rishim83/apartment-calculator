@@ -45,6 +45,7 @@ export function Scenario4Panel({ r, inp }) {
               <MR sep />
               <SH label="Total In vs Total Out" color="#4338ca" />
               <MR label={`Mortgage + maintenance (${inp.forwardYears} yrs)`} value={-s4a.totalCost}     red indent />
+              <MR label={`+ Tax deductions (int + ${inp.maintDeductPct}% maint @ ${inp.marginalTaxRate}%)`} value={s4a.taxSavings} green indent />
               <MR label="Net proceeds if sold"                     value={s4a.netSoldAfterTax}   green indent />
               <MR sep />
               <MR label="NET FINANCIAL POSITION"                   value={s4a.netPosition}       bold green={s4a.netPosition >= 0} red={s4a.netPosition < 0} />

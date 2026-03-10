@@ -33,4 +33,6 @@ export const DEFAULTS = {
   homeAppr:        3.0,
   capGainsRate:    20,
   investmentTaxRate: 15,
+  marginalTaxRate:   35,
+  maintDeductPct:    50,
 }

@@ -78,6 +78,7 @@ export function ForwardPanel({ r, inp }) {
               <MR sep />
               <SH label="Total In vs Total Out" color="#047857" />
               <MR label={`Mortgage + maintenance (${inp.forwardYears} yrs)`} value={-s3.totalCost}      red indent />
+              <MR label={`+ Tax deductions (int + ${inp.maintDeductPct}% maint @ ${inp.marginalTaxRate}%)`} value={s3.taxSavings} green indent />
               <MR label="Net proceeds if sold"                 value={s3.netSoldAfterTax}    green indent />
               <MR sep />
               <MR label="NET FINANCIAL POSITION"               value={s3.netPosition}        bold green={s3.netPosition >= 0} red={s3.netPosition < 0} />

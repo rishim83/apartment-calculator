@@ -1,9 +1,11 @@
 import { fmt } from '../utils/format'
 
 export function ComparisonPanel({ r, inp }) {
-  const b  = r.histBuy
-  const s2 = r.sc2
-  const s3 = r.sc3
+  const b   = r.histBuy
+  const s2  = r.sc2
+  const s3  = r.sc3
+  const s4a = r.sc4a
+  const s4b = r.sc4b
 
   return (
     <div className="panel">
@@ -31,6 +33,12 @@ export function ComparisonPanel({ r, inp }) {
               <th style={{ background: '#f0fdf4', color: '#047857' }}>
                 Sc.3: Keep @ {inp.newRate}%<br /><span style={{ fontWeight: 400, fontSize: 10 }}>now → +{inp.forwardYears}yr</span>
               </th>
+              <th style={{ background: '#eef2ff', color: '#4338ca' }}>
+                Sc.4A: Pay Down + Keep<br /><span style={{ fontWeight: 400, fontSize: 10 }}>−{fmt(inp.lumpSum)} on mortgage</span>
+              </th>
+              <th style={{ background: '#ecfeff', color: '#0e7490' }}>
+                Sc.4B: Sell + Invest {fmt(inp.lumpSum)}<br /><span style={{ fontWeight: 400, fontSize: 10 }}>now → +{inp.forwardYears}yr</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +48,8 @@ export function ComparisonPanel({ r, inp }) {
               <td style={{ background: '#faf5ff' }}>{fmt(-inp.startRent)}</td>
               <td style={{ background: '#fff7ed' }}>{fmt(-inp.newRent)}</td>
               <td style={{ background: '#f0fdf4' }}>{fmt(-s3.monthlyCostYr1)}</td>
+              <td style={{ background: '#eef2ff' }}>{fmt(-s4a.monthlyCostYr1)}</td>
+              <td style={{ background: '#ecfeff' }}>{fmt(-inp.newRent)}</td>
             </tr>
             <tr>
               <td style={{ color: '#64748b', fontWeight: 600 }}>Total Housing / Rent Costs</td>
@@ -47,6 +57,8 @@ export function ComparisonPanel({ r, inp }) {
               <td style={{ background: '#faf5ff' }}>{fmt(-r.histRent.totalRent)}</td>
               <td style={{ background: '#fff7ed' }}>{fmt(-s2.totalRent)}</td>
               <td style={{ background: '#f0fdf4' }}>{fmt(-s3.totalCost)}</td>
+              <td style={{ background: '#eef2ff' }}>{fmt(-s4a.totalCost)}</td>
+              <td style={{ background: '#ecfeff' }}>{fmt(-s4b.totalRent)}</td>
             </tr>
             <tr>
               <td style={{ color: '#64748b', fontWeight: 600 }}>Ending Portfolio / Net if Sold<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(after all taxes)</span></td>
@@ -54,15 +66,17 @@ export function ComparisonPanel({ r, inp }) {
               <td style={{ background: '#faf5ff' }}>{fmt(r.histRent.portfolioAfterTax)}</td>
               <td style={{ background: '#fff7ed' }}>{fmt(s2.portfolioAfterTax)}</td>
               <td style={{ background: '#f0fdf4' }}>{fmt(s3.netSoldAfterTax)}</td>
+              <td style={{ background: '#eef2ff' }}>{fmt(s4a.netSoldAfterTax)}</td>
+              <td style={{ background: '#ecfeff' }}>{fmt(s4b.totalPortfolioAfterTax)}</td>
             </tr>
             <tr style={{ background: '#f8f8f8' }}>
               <td style={{ color: '#1e293b', fontWeight: 700 }}>
                 NET FINANCIAL POSITION<br />
                 <span style={{ fontSize: 10, fontWeight: 400, color: '#64748b' }}>Ending value − all costs paid</span>
               </td>
-              {[b.netPosition, r.histRent.netPosition, s2.netPosition, s3.netPosition].map((v, i) => {
-                const bgs  = ['#eff6ff', '#faf5ff', '#fff7ed', '#f0fdf4']
-                const cols = ['#1d4ed8', '#7c3aed', '#c2410c', '#047857']
+              {[b.netPosition, r.histRent.netPosition, s2.netPosition, s3.netPosition, s4a.netPosition, s4b.netPosition].map((v, i) => {
+                const bgs  = ['#eff6ff', '#faf5ff', '#fff7ed', '#f0fdf4', '#eef2ff', '#ecfeff']
+                const cols = ['#1d4ed8', '#7c3aed', '#c2410c', '#047857', '#4338ca', '#0e7490']
                 return (
                   <td key={i} style={{ background: bgs[i], fontWeight: 700, fontSize: 13, color: v >= 0 ? cols[i] : '#dc2626' }}>
                     {fmt(v)}

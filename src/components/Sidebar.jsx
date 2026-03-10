@@ -49,7 +49,8 @@ export function Sidebar({ inp, upd }) {
           <div className="igroup-label">Shared Assumptions</div>
           <NumberInput label="Portfolio Return"         value={inp.portfolioReturn} onChange={v => upd('portfolioReturn', v)} step={0.5} pfx="" sfx="%" />
           <NumberInput label="Home Appreciation / yr"   value={inp.homeAppr}        onChange={v => upd('homeAppr', v)}        step={0.5} pfx="" sfx="%" />
-          <NumberInput label="Capital Gains Rate"       value={inp.capGainsRate}    onChange={v => upd('capGainsRate', v)}    step={1} pfx="" sfx="%" />
+          <NumberInput label="Capital Gains Rate (RE)"   value={inp.capGainsRate}      onChange={v => upd('capGainsRate', v)}      step={1} pfx="" sfx="%" />
+          <NumberInput label="Investment Tax Rate (LT)"  value={inp.investmentTaxRate} onChange={v => upd('investmentTaxRate', v)} step={1} pfx="" sfx="%" />
         </div>
 
       </div>

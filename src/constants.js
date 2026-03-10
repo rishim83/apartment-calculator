@@ -29,4 +29,5 @@ export const DEFAULTS = {
   portfolioReturn: 8.5,
   homeAppr:        3.0,
   capGainsRate:    20,
+  investmentTaxRate: 15,
 }

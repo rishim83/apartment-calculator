@@ -70,13 +70,19 @@ export function calcAll(inp) {
   }
 
   // ── HISTORICAL RENT WHAT-IF (2019 → today) ────────────────────────────────
-  const histRentPortfolio  = grow(inp.downPayment, inp.portfolioReturn, inp.holdYears)
-  const histTotalRent      = sumEscalating(inp.startRent, inp.rentEsc, inp.holdYears)
-  const histRentYrLast     = inp.startRent * Math.pow(1 + inp.rentEsc / 100, inp.holdYears - 1)
-  const histRentMonthlyAvg = histTotalRent / (inp.holdYears * 12)
+  const histRentPortfolio     = grow(inp.downPayment, inp.portfolioReturn, inp.holdYears)
+  const histRentInvGain       = histRentPortfolio - inp.downPayment
+  const histRentInvTax        = Math.max(0, histRentInvGain) * (inp.investmentTaxRate / 100)
+  const histRentPortfolioATax = histRentPortfolio - histRentInvTax
+  const histTotalRent         = sumEscalating(inp.startRent, inp.rentEsc, inp.holdYears)
+  const histRentYrLast        = inp.startRent * Math.pow(1 + inp.rentEsc / 100, inp.holdYears - 1)
+  const histRentMonthlyAvg    = histTotalRent / (inp.holdYears * 12)
 
   const histRent = {
     portfolio: histRentPortfolio,
+    invGain: histRentInvGain,
+    invTax: histRentInvTax,
+    portfolioAfterTax: histRentPortfolioATax,
     totalRent: histTotalRent,
     rentYr1: inp.startRent,
     rentYrLast: histRentYrLast,
@@ -91,7 +97,10 @@ export function calcAll(inp) {
   const sc2Portfolio         = sc2StartingPortfolio > 0
     ? grow(sc2StartingPortfolio, inp.portfolioReturn, inp.forwardYears)
     : sc2StartingPortfolio
-  const sc2TotalRent = inp.newRent * 12 * inp.forwardYears
+  const sc2InvGain           = sc2Portfolio - sc2StartingPortfolio
+  const sc2InvTax            = Math.max(0, sc2InvGain) * (inp.investmentTaxRate / 100)
+  const sc2PortfolioAfterTax = sc2Portfolio - sc2InvTax
+  const sc2TotalRent         = inp.newRent * 12 * inp.forwardYears
 
   const sc2 = {
     sellingCosts: sc2SellingCosts,
@@ -99,6 +108,9 @@ export function calcAll(inp) {
     ...sc2CG,
     startingPortfolio: sc2StartingPortfolio,
     portfolio: sc2Portfolio,
+    invGain: sc2InvGain,
+    invTax: sc2InvTax,
+    portfolioAfterTax: sc2PortfolioAfterTax,
     totalRent: sc2TotalRent,
     monthlyCost: inp.newRent,
   }
@@ -146,10 +158,10 @@ export function calcAll(inp) {
   const oldPmt = pmt(histLoan, inp.originalRate, 360)
 
   // ── NET FINANCIAL POSITIONS (ending wealth − all money spent) ─────────────
-  histBuy.netPosition  = histBuy.netAfterTax   - histBuy.totalCost
-  histRent.netPosition = histRent.portfolio    - histRent.totalRent
-  sc2.netPosition      = sc2.portfolio         - sc2.totalRent
-  sc3.netPosition      = sc3.netSoldAfterTax   - sc3.totalCost
+  histBuy.netPosition  = histBuy.netAfterTax          - histBuy.totalCost
+  histRent.netPosition = histRent.portfolioAfterTax   - histRent.totalRent
+  sc2.netPosition      = sc2.portfolioAfterTax        - sc2.totalRent
+  sc3.netPosition      = sc3.netSoldAfterTax          - sc3.totalCost
 
   // Sensitivity rows comparing NET positions at each appreciation rate
   const sensitivityRows = [0, 1, 2, 3, 4, 5, 6].map((appr) => ({

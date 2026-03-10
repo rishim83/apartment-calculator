@@ -37,14 +37,17 @@ export function ForwardPanel({ r, inp }) {
               <MR sep />
               <SH label={`Portfolio Over ${inp.forwardYears} Years`} color="#c2410c" />
               <MR label={`Portfolio return @ ${inp.portfolioReturn}%/yr`} value={inp.portfolioReturn + '%/yr'} />
-              <MR label={`Portfolio after ${inp.forwardYears} years`} value={s2.portfolio} green bold />
+              <MR label={`Portfolio after ${inp.forwardYears} years (pre-tax)`} value={s2.portfolio} green bold />
+              <MR label="Investment gain"                         value={s2.invGain}           sub />
+              <MR label={`− LT capital gains tax (${inp.investmentTaxRate}%)`} value={-s2.invTax} red indent />
+              <MR label="Portfolio after tax (if liquidated)"     value={s2.portfolioAfterTax} green bold />
               <MR sep />
               <SH label="Rent Cost" color="#c2410c" />
               <MR label="Monthly rent"                            value={-inp.newRent}         red indent />
               <MR label={`Total rent over ${inp.forwardYears} years`} value={-s2.totalRent}    red bold />
               <MR sep />
               <SH label="Total In vs Total Out" color="#c2410c" />
-              <MR label="Portfolio value"                         value={s2.portfolio}         green indent />
+              <MR label="Portfolio after tax"                     value={s2.portfolioAfterTax} green indent />
               <MR label="− Total rent paid"                       value={-s2.totalRent}        red indent />
               <MR sep />
               <MR label="NET FINANCIAL POSITION"                  value={s2.netPosition}       bold green={s2.netPosition >= 0} red={s2.netPosition < 0} />
@@ -93,7 +96,7 @@ export function ForwardPanel({ r, inp }) {
             {inp.forwardYears}-Year Verdict — {sc2wins ? 'Selling + Renting comes out ahead' : 'Keeping the apartment comes out ahead'}
           </div>
           <div className="vl">
-            <strong>Sell+Rent net position: {fmt(s2.netPosition)}</strong> (portfolio {fmt(s2.portfolio)} − rent {fmt(-s2.totalRent)})
+            <strong>Sell+Rent net position: {fmt(s2.netPosition)}</strong> (portfolio after tax {fmt(s2.portfolioAfterTax)} − rent {fmt(-s2.totalRent)})
             {' '}vs <strong>Keep net position: {fmt(s3.netPosition)}</strong> (proceeds {fmt(s3.netSoldAfterTax)} − costs {fmt(-s3.totalCost)}).
             {' '}{sc2wins ? 'Selling now' : 'Keeping'} wins by <strong>{fmt(Math.abs(diff))}</strong> on total-in vs total-out at {inp.homeAppr}% appreciation.
             {' '}Monthly cost difference: keeping {fmt(-s3.monthlyCostYr1)}/mo vs renting {fmt(-inp.newRent)}/mo

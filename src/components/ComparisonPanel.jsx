@@ -49,10 +49,10 @@ export function ComparisonPanel({ r, inp }) {
               <td style={{ background: '#f0fdf4' }}>{fmt(-s3.totalCost)}</td>
             </tr>
             <tr>
-              <td style={{ color: '#64748b', fontWeight: 600 }}>Ending Portfolio / Net if Sold</td>
+              <td style={{ color: '#64748b', fontWeight: 600 }}>Ending Portfolio / Net if Sold<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(after all taxes)</span></td>
               <td style={{ background: '#eff6ff' }}>{fmt(b.netAfterTax)}</td>
-              <td style={{ background: '#faf5ff' }}>{fmt(r.histRent.portfolio)}</td>
-              <td style={{ background: '#fff7ed' }}>{fmt(s2.portfolio)}</td>
+              <td style={{ background: '#faf5ff' }}>{fmt(r.histRent.portfolioAfterTax)}</td>
+              <td style={{ background: '#fff7ed' }}>{fmt(s2.portfolioAfterTax)}</td>
               <td style={{ background: '#f0fdf4' }}>{fmt(s3.netSoldAfterTax)}</td>
             </tr>
             <tr style={{ background: '#f8f8f8' }}>
@@ -78,7 +78,7 @@ export function ComparisonPanel({ r, inp }) {
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b', marginBottom: 8 }}>
             Sensitivity: Home Appreciation vs "Sell + Rent" — Net Financial Position Comparison
             <span style={{ fontWeight: 400, marginLeft: 8 }}>
-              Sell+Rent net: <strong>{fmt(s2.netPosition)}</strong> (portfolio {fmt(s2.portfolio)} − rent {fmt(-s2.totalRent)})
+              Sell+Rent net: <strong>{fmt(s2.netPosition)}</strong> (portfolio after tax {fmt(s2.portfolioAfterTax)} − rent {fmt(-s2.totalRent)})
             </span>
           </div>
           <table className="cmp-tbl">

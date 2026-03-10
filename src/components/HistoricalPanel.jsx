@@ -61,7 +61,10 @@ export function HistoricalPanel({ r, inp }) {
               <SH label="Investing the Down Payment" color="#7c3aed" />
               <MR label="Down payment (invested instead)"       value={inp.downPayment} />
               <MR label={`Portfolio return @ ${inp.portfolioReturn}%/yr`} value={inp.portfolioReturn + '%/yr'} />
-              <MR label={`Portfolio after ${inp.holdYears} years`} value={rent.portfolio} green bold />
+              <MR label={`Portfolio after ${inp.holdYears} years (pre-tax)`} value={rent.portfolio} green bold />
+              <MR label="Investment gain"                       value={rent.invGain}       sub />
+              <MR label={`− LT capital gains tax (${inp.investmentTaxRate}%)`} value={-rent.invTax} red indent />
+              <MR label="Portfolio after tax (if liquidated)"   value={rent.portfolioAfterTax} green bold />
               <MR sep />
               <SH label="Rent Paid" color="#7c3aed" />
               <MR label="Monthly rent yr 1"                     value={-inp.startRent}     red indent />
@@ -69,7 +72,7 @@ export function HistoricalPanel({ r, inp }) {
               <MR label={`Total rent paid (${inp.holdYears} yrs)`} value={-rent.totalRent} red bold />
               <MR sep />
               <SH label="Total In vs Total Out" color="#7c3aed" />
-              <MR label="Portfolio (invested down payment)"     value={rent.portfolio}    green indent />
+              <MR label="Portfolio after tax"                   value={rent.portfolioAfterTax} green indent />
               <MR label="− Total rent paid"                     value={-rent.totalRent}   red indent />
               <MR sep />
               <MR label="NET FINANCIAL POSITION"                value={rent.netPosition}  bold green={rent.netPosition >= 0} red={rent.netPosition < 0} />
@@ -90,7 +93,7 @@ export function HistoricalPanel({ r, inp }) {
             <strong>Buy net position: {fmt(b.netPosition)}</strong> vs <strong>Rent net position: {fmt(rent.netPosition)}</strong>
             {' — '}{buyAhead ? 'Buying' : 'Renting'} wins by <strong>{fmt(Math.abs(diff))}</strong> on a total-in-vs-total-out basis.
             {' '}Buy: walk away with {fmt(b.netAfterTax)} after spending {fmt(-b.totalCost)} on housing.
-            {' '}Rent: portfolio {fmt(rent.portfolio)} after spending {fmt(-rent.totalRent)} on rent.
+            {' '}Rent: portfolio {fmt(rent.portfolioAfterTax)} (after {fmt(-rent.invTax)} investment tax) after spending {fmt(-rent.totalRent)} on rent.
             {b.gain < 0 && ' Note: apartment sold below cost basis — no capital gains tax.'}
           </div>
         </div>

@@ -18,7 +18,7 @@ export const DEFAULTS = {
   rentEsc:         3.0,
 
   // Forward Scenario 2: Sell + Rent
-  newRent:         5000,
+  newRent:         4500,
   forwardYears:    3,
 
   // Forward Scenario 3: Keep at new rate

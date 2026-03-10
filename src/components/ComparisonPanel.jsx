@@ -90,9 +90,9 @@ export function ComparisonPanel({ r, inp }) {
         {/* Sensitivity table */}
         <div style={{ marginTop: 4 }}>
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#64748b', marginBottom: 8 }}>
-            Sensitivity: Home Appreciation vs "Sell + Rent" — Net Financial Position Comparison
+            Sensitivity: Home Appreciation — NET Financial Position (All Forward Scenarios)
             <span style={{ fontWeight: 400, marginLeft: 8 }}>
-              Sell+Rent net: <strong>{fmt(s2.netPosition)}</strong> (portfolio after tax {fmt(s2.portfolioAfterTax)} − rent {fmt(-s2.totalRent)})
+              Fixed refs — Sc.2: <strong>{fmt(s2.netPosition)}</strong> · Sc.4B: <strong>{fmt(s4b.netPosition)}</strong>
             </span>
           </div>
           <table className="cmp-tbl">
@@ -100,34 +100,38 @@ export function ComparisonPanel({ r, inp }) {
               <tr style={{ background: '#334155', color: 'white' }}>
                 <th style={{ color: 'white', textAlign: 'left' }}>Appreciation / yr</th>
                 <th style={{ color: 'white' }}>Home Value {2026 + inp.forwardYears}</th>
-                <th style={{ color: 'white' }}>Keep: Net if Sold</th>
-                <th style={{ color: 'white' }}>
-                  Keep: NET Position<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(proceeds − costs)</span>
+                <th style={{ color: 'white', background: '#1e3a5f' }}>
+                  Sc.3: Keep NET<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(proceeds − costs)</span>
                 </th>
-                <th style={{ color: 'white' }}>
-                  Sell+Rent NET<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(portfolio − rent)</span>
+                <th style={{ color: 'white', background: '#312e81' }}>
+                  Sc.4A: Pay Down NET<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(proceeds − costs)</span>
                 </th>
-                <th style={{ color: 'white' }}>Difference</th>
+                <th style={{ color: 'white', background: '#7c2d12' }}>
+                  Sc.2: Sell+Rent NET<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(fixed)</span>
+                </th>
+                <th style={{ color: 'white', background: '#164e63' }}>
+                  Sc.4B: Sell+Invest NET<br /><span style={{ fontWeight: 400, fontSize: 10 }}>(fixed)</span>
+                </th>
                 <th style={{ color: 'white', textAlign: 'center' }}>Winner</th>
               </tr>
             </thead>
             <tbody>
               {s3.sensitivityRows.map(row => {
-                const wins = row.sc3Net > row.sc2Net
+                const nets = { 'Sc.3': row.sc3Net, 'Sc.4A': row.sc4aNet, 'Sc.2': row.sc2Net, 'Sc.4B': row.sc4bNet }
+                const best = Object.entries(nets).reduce((a, b) => b[1] > a[1] ? b : a)[0]
+                const isBase = row.appr === inp.homeAppr
                 return (
-                  <tr key={row.appr} className={wins ? 'sens-row-win' : 'sens-row-lose'}>
-                    <td style={{ fontWeight: row.appr === inp.homeAppr ? 700 : 400 }}>
-                      {row.appr}% / yr {row.appr === inp.homeAppr ? '← base case' : ''}
+                  <tr key={row.appr} style={{ background: isBase ? '#f0f9ff' : undefined }}>
+                    <td style={{ fontWeight: isBase ? 700 : 400 }}>
+                      {row.appr}% / yr {isBase ? '← base case' : ''}
                     </td>
-                    <td>{fmt(inp.currentValue * Math.pow(1 + row.appr / 100, inp.forwardYears))}</td>
-                    <td style={{ color: wins ? '#047857' : '#64748b' }}>{fmt(row.netSold)}</td>
-                    <td style={{ fontWeight: 700, color: wins ? '#047857' : '#dc2626' }}>{fmt(row.sc3Net)}</td>
-                    <td style={{ color: '#c2410c' }}>{fmt(row.sc2Net)}</td>
-                    <td style={{ fontWeight: 600, color: wins ? '#047857' : '#dc2626' }}>
-                      {wins ? '+' : ''}{fmt(row.sc3Net - row.sc2Net)}
-                    </td>
-                    <td style={{ textAlign: 'center', fontWeight: 700, color: wins ? '#047857' : '#c2410c' }}>
-                      {wins ? 'Keep' : 'Sell + Rent'}
+                    <td>{fmt(row.homeVal)}</td>
+                    <td style={{ fontWeight: 700, color: best === 'Sc.3' ? '#047857' : '#64748b' }}>{fmt(row.sc3Net)}</td>
+                    <td style={{ fontWeight: 700, color: best === 'Sc.4A' ? '#4338ca' : '#64748b' }}>{fmt(row.sc4aNet)}</td>
+                    <td style={{ fontWeight: 700, color: best === 'Sc.2' ? '#c2410c' : '#64748b' }}>{fmt(row.sc2Net)}</td>
+                    <td style={{ fontWeight: 700, color: best === 'Sc.4B' ? '#0e7490' : '#64748b' }}>{fmt(row.sc4bNet)}</td>
+                    <td style={{ textAlign: 'center', fontWeight: 700, color: best === 'Sc.3' ? '#047857' : best === 'Sc.4A' ? '#4338ca' : best === 'Sc.2' ? '#c2410c' : '#0e7490' }}>
+                      {best}
                     </td>
                   </tr>
                 )

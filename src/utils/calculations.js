@@ -133,7 +133,7 @@ export function calcAll(inp) {
     sc3TotalCost += (sc3Pmt + inp.monthlyMaint * Math.pow(1 + inp.maintEsc / 100, y)) * 12
   }
 
-  // Sensitivity table: how does appreciation affect "Keep" vs "Sell+Rent"?
+  // Sensitivity table: how does appreciation affect "Keep" scenarios vs "Sell+Rent"?
   const sc3NetAtAppr = (appr) => {
     const hv = grow(inp.currentValue, appr, inp.forwardYears)
     return hv - sc3Balance - hv * (inp.sellingCostPct / 100)
@@ -167,6 +167,13 @@ export function calcAll(inp) {
   let sc4aTotalCost = 0
   for (let y = 0; y < inp.forwardYears; y++) {
     sc4aTotalCost += (sc4aPmt + inp.monthlyMaint * Math.pow(1 + inp.maintEsc / 100, y)) * 12
+  }
+
+  const sc4aNetAtAppr = (appr) => {
+    const hv      = grow(inp.currentValue, appr, inp.forwardYears)
+    const netSold = hv - sc4aFwdBalance - hv * (inp.sellingCostPct / 100)
+    const cg      = capGains(hv, costBasis, inp.capGainsRate)
+    return netSold - cg.tax - sc4aTotalCost
   }
 
   const sc4a = {
@@ -219,7 +226,9 @@ export function calcAll(inp) {
     homeVal: grow(inp.currentValue, appr, inp.forwardYears),
     netSold: sc3NetAtAppr(appr),
     sc3Net:  sc3NetAtAppr(appr) - sc3TotalCost,
+    sc4aNet: sc4aNetAtAppr(appr),
     sc2Net:  sc2.netPosition,
+    sc4bNet: sc4b.netPosition,
   }))
   sc3.sensitivityRows = sensitivityRows
 

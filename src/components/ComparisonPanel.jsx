@@ -101,11 +101,11 @@ export function ComparisonPanel({ r, inp }) {
               {s3.sensitivityRows.map(row => {
                 const wins = row.sc3Net > row.sc2Net
                 return (
-                  <tr key={row.pct} className={wins ? 'sens-row-win' : 'sens-row-lose'}>
-                    <td style={{ fontWeight: row.pct === inp.homeAppr ? 700 : 400 }}>
-                      {row.pct}% / yr {row.pct === inp.homeAppr ? '← base case' : ''}
+                  <tr key={row.appr} className={wins ? 'sens-row-win' : 'sens-row-lose'}>
+                    <td style={{ fontWeight: row.appr === inp.homeAppr ? 700 : 400 }}>
+                      {row.appr}% / yr {row.appr === inp.homeAppr ? '← base case' : ''}
                     </td>
-                    <td>{fmt(inp.currentValue * Math.pow(1 + row.pct / 100, inp.forwardYears))}</td>
+                    <td>{fmt(inp.currentValue * Math.pow(1 + row.appr / 100, inp.forwardYears))}</td>
                     <td style={{ color: wins ? '#047857' : '#64748b' }}>{fmt(row.netSold)}</td>
                     <td style={{ fontWeight: 700, color: wins ? '#047857' : '#dc2626' }}>{fmt(row.sc3Net)}</td>
                     <td style={{ color: '#c2410c' }}>{fmt(row.sc2Net)}</td>

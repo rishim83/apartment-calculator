@@ -1,9 +1,9 @@
 export const DEFAULTS = {
   // Current state
-  currentValue:    675000,
+  currentValue:    650000,
   mortgageBalance: 421943,
-  sellingCostPct:  9.5,
-  monthlyMaint:    1700,
+  sellingCostPct:  8.5,
+  monthlyMaint:    2000,
   maintEsc:        3.0,
 
   // Historical purchase (2019)

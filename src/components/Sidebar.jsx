@@ -40,9 +40,14 @@ export function Sidebar({ inp, upd }) {
         </div>
 
         <div className="igroup">
-          <div className="igroup-label">Forward: Keep at New Rate (Sc. 3)</div>
+          <div className="igroup-label">Forward: Keep at New Rate (Sc. 3 &amp; 4)</div>
           <NumberInput label="New Mortgage Rate"        value={inp.newRate}         onChange={v => upd('newRate', v)}         step={0.25} pfx="" sfx="%" />
           <NumberInput label="Remaining Loan Months"    value={inp.remainingMonths} onChange={v => upd('remainingMonths', v)} step={12} pfx="" />
+        </div>
+
+        <div className="igroup">
+          <div className="igroup-label">Scenario 4: Lump Sum Paydown</div>
+          <NumberInput label="Lump Sum Payment"         value={inp.lumpSum}         onChange={v => upd('lumpSum', v)}         step={10000} />
         </div>
 
         <div className="igroup">

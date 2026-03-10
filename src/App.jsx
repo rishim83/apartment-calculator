@@ -6,6 +6,7 @@ import { Sidebar } from './components/Sidebar'
 import { HistoricalPanel } from './components/HistoricalPanel'
 import { ForwardPanel } from './components/ForwardPanel'
 import { ComparisonPanel } from './components/ComparisonPanel'
+import { Scenario4Panel } from './components/Scenario4Panel'
 import './App.css'
 
 export default function App() {
@@ -20,16 +21,17 @@ export default function App() {
         <div className="page-header">
           <div>
             <h1>NYC Co-op Apartment Decision Calculator</h1>
-            <p>Three scenarios: historical buy/rent comparison (2019), sell today + rent, or keep at new rate</p>
+            <p>Four scenarios: historical buy/rent comparison (2019), sell today + rent, keep at new rate, or lump sum paydown</p>
           </div>
           <div style={{ textAlign: 'right', fontSize: 11, color: '#64748b' }}>
             <div>Cost basis: {fmt(inp.purchasePrice + inp.renovationCosts)}</div>
             <div>Today's equity: {fmt(inp.currentValue - inp.mortgageBalance)}</div>
           </div>
         </div>
-        <HistoricalPanel r={r} inp={inp} />
-        <ForwardPanel    r={r} inp={inp} />
-        <ComparisonPanel r={r} inp={inp} />
+        <HistoricalPanel  r={r} inp={inp} />
+        <ForwardPanel     r={r} inp={inp} />
+        <Scenario4Panel   r={r} inp={inp} />
+        <ComparisonPanel  r={r} inp={inp} />
       </div>
     </div>
   )

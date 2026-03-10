@@ -154,6 +154,52 @@ export function calcAll(inp) {
     monthlyCostYr1: sc3Pmt + inp.monthlyMaint,
   }
 
+  // ── SCENARIO 4A — LUMP SUM PAYDOWN + KEEP ────────────────────────────────
+  const sc4aBalance     = inp.mortgageBalance - inp.lumpSum
+  const sc4aPmt         = pmt(sc4aBalance, inp.newRate, inp.remainingMonths)
+  const sc4aFwdBalance  = balAfter(sc4aBalance, inp.newRate, sc4aPmt, fwdMonths)
+  const sc4aHomeVal     = grow(inp.currentValue, inp.homeAppr, inp.forwardYears)
+  const sc4aSelCosts    = sc4aHomeVal * (inp.sellingCostPct / 100)
+  const sc4aNetSold     = sc4aHomeVal - sc4aFwdBalance - sc4aSelCosts
+  const sc4aCG          = capGains(sc4aHomeVal, costBasis, inp.capGainsRate)
+  const sc4aNetSoldATax = sc4aNetSold - sc4aCG.tax
+
+  let sc4aTotalCost = 0
+  for (let y = 0; y < inp.forwardYears; y++) {
+    sc4aTotalCost += (sc4aPmt + inp.monthlyMaint * Math.pow(1 + inp.maintEsc / 100, y)) * 12
+  }
+
+  const sc4a = {
+    lumpSum: inp.lumpSum,
+    balance: sc4aBalance,
+    pmt: sc4aPmt,
+    fwdBalance: sc4aFwdBalance,
+    homeVal: sc4aHomeVal,
+    selCosts: sc4aSelCosts,
+    netSold: sc4aNetSold,
+    ...sc4aCG,
+    netSoldAfterTax: sc4aNetSoldATax,
+    totalCost: sc4aTotalCost,
+    monthlyCostYr1: sc4aPmt + inp.monthlyMaint,
+  }
+
+  // ── SCENARIO 4B — SELL + RENT + INVEST LUMP SUM ──────────────────────────
+  // Same sell/rent as sc2, plus the lump sum invested separately
+  const sc4bLumpPortfolio  = grow(inp.lumpSum, inp.portfolioReturn, inp.forwardYears)
+  const sc4bLumpGain       = sc4bLumpPortfolio - inp.lumpSum
+  const sc4bLumpTax        = Math.max(0, sc4bLumpGain) * (inp.investmentTaxRate / 100)
+  const sc4bLumpAfterTax   = sc4bLumpPortfolio - sc4bLumpTax
+  const sc4bTotalPortATax  = sc2.portfolioAfterTax + sc4bLumpAfterTax
+
+  const sc4b = {
+    lumpPortfolio: sc4bLumpPortfolio,
+    lumpGain: sc4bLumpGain,
+    lumpTax: sc4bLumpTax,
+    lumpAfterTax: sc4bLumpAfterTax,
+    totalPortfolioAfterTax: sc4bTotalPortATax,
+    totalRent: sc2.totalRent,
+  }
+
   // Old payment at original rate (for Scenario 3 comparison)
   const oldPmt = pmt(histLoan, inp.originalRate, 360)
 
@@ -162,6 +208,10 @@ export function calcAll(inp) {
   histRent.netPosition = histRent.portfolioAfterTax   - histRent.totalRent
   sc2.netPosition      = sc2.portfolioAfterTax        - sc2.totalRent
   sc3.netPosition      = sc3.netSoldAfterTax          - sc3.totalCost
+  // 4A: lump sum reduces mortgage → comes back via higher equity in netSoldAfterTax, don't double-count
+  sc4a.netPosition     = sc4a.netSoldAfterTax         - sc4a.totalCost
+  // 4B: sell (sc2) + invest lump sum — lump sum goes into portfolio, already in totalPortfolioAfterTax
+  sc4b.netPosition     = sc4b.totalPortfolioAfterTax  - sc4b.totalRent
 
   // Sensitivity rows comparing NET positions at each appreciation rate
   const sensitivityRows = [0, 1, 2, 3, 4, 5, 6].map((appr) => ({
@@ -173,5 +223,5 @@ export function calcAll(inp) {
   }))
   sc3.sensitivityRows = sensitivityRows
 
-  return { histBuy, histRent, sc2, sc3, costBasis, oldPmt }
+  return { histBuy, histRent, sc2, sc3, sc4a, sc4b, costBasis, oldPmt }
 }

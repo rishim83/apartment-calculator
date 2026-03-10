@@ -25,6 +25,9 @@ export const DEFAULTS = {
   newRate:         6.0,
   remainingMonths: 282,
 
+  // Scenario 4: Lump sum paydown + keep
+  lumpSum:         200000,
+
   // Shared assumptions
   portfolioReturn: 8.5,
   homeAppr:        3.0,
